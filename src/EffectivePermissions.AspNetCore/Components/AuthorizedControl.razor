@@ -1,0 +1,72 @@
+@namespace EffectivePermissions.AspNetCore.Components
+
+@*
+    Renders its content only when the current subject holds a permission.
+
+    The failure this component is designed around: if it reads its permission state from a
+    cascading value and that cascade is not present, every AuthorizedControl in the
+    application renders NOTHING — for everybody, including administrators. The application
+    does not error. It simply loses every button, and the reports that follow describe
+    missing features rather than a missing cascade.
+
+    So a missing cascade throws, loudly, naming the fix. A component that cannot answer its
+    question must not answer "no".
+*@
+
+@if (_allowed)
+{
+    @ChildContent
+}
+else if (Denied is not null)
+{
+    @Denied
+}
+
+@code {
+    /// <summary>The permission required to render <see cref="ChildContent"/>.</summary>
+    [Parameter, EditorRequired]
+    public string Permission { get; set; } = string.Empty;
+
+    /// <summary>Scope to evaluate against. Defaults to the state's current scope.</summary>
+    [Parameter]
+    public string? Scope { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>Rendered instead when the permission is not held. Usually nothing.</summary>
+    [Parameter]
+    public RenderFragment? Denied { get; set; }
+
+    [CascadingParameter]
+    public PermissionState? State { get; set; }
+
+    private bool _allowed;
+
+    protected override void OnParametersSet()
+    {
+        if (string.IsNullOrWhiteSpace(Permission))
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AuthorizedControl)} requires a {nameof(Permission)}. Rendering "
+                + "unconditionally would be a silent hole; rendering nothing would be a "
+                + "silent gap.");
+        }
+
+        if (State is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AuthorizedControl)} for '{Permission}' found no cascading "
+                + $"{nameof(PermissionState)}.\n\n"
+                + "Without it this control would render nothing, for every user, everywhere "
+                + "it appears - and nothing would report an error. Wrap the application in:\n\n"
+                + "    <CascadingValue Value=\"permissionState\">\n"
+                + "        <Routes />\n"
+                + "    </CascadingValue>");
+        }
+
+        _allowed = Scope is null
+            ? State.IsAllowed(Permission)
+            : State.IsAllowed(Permission, Scope);
+    }
+}

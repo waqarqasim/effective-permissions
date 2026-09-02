@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - run: dotnet restore effective-permissions.slnx
+
+      - run: dotnet build effective-permissions.slnx --no-restore -c Release
+
+      - run: dotnet test effective-permissions.slnx --no-build -c Release
+
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet pack src/EffectivePermissions/EffectivePermissions.csproj --no-build -c Release -o artifacts
+          dotnet pack src/EffectivePermissions.AspNetCore/EffectivePermissions.AspNetCore.csproj --no-build -c Release -o artifacts
+
+      - name: Upload packages
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts/*.nupkg

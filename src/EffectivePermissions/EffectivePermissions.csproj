@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>EffectivePermissions</PackageId>
+    <Description>Hierarchical, dependency-aware permission evaluation: what a subject can actually do, not what was granted to them.</Description>
+  </PropertyGroup>
+
+</Project>

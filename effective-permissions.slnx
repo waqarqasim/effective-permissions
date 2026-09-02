@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EffectivePermissions/EffectivePermissions.csproj" />
+    <Project Path="src/EffectivePermissions.AspNetCore/EffectivePermissions.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Depot/Depot.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EffectivePermissions.Tests/EffectivePermissions.Tests.csproj" />
+    <Project Path="tests/EffectivePermissions.AspNetCore.Tests/EffectivePermissions.AspNetCore.Tests.csproj" />
+  </Folder>
+</Solution>
