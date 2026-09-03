@@ -8,7 +8,7 @@ not what was granted to them.**
 ```bash
 git clone https://github.com/waqarqasim/effective-permissions
 cd effective-permissions
-dotnet test effective-permissions.slnx        # 54 tests
+dotnet test effective-permissions.slnx        # 60 tests
 dotnet run --project samples/Depot            # then: /effective?as=riley&at=york
 ```
 
@@ -132,7 +132,7 @@ modules claiming one permission are all startup failures.
 
 ## Verified, not asserted
 
-54 tests, and the ones that matter were mutation-checked rather than trusted:
+60 tests, and the ones that matter were mutation-checked rather than trusted:
 
 | mutation | tests killed |
 | --- | --- |
@@ -160,7 +160,7 @@ unconditionally, which is the failure that matters.
 src/EffectivePermissions             catalogue, scope tree, closure, evaluation — no ASP.NET
 src/EffectivePermissions.AspNetCore  policy provider, handler, AuthorizedControl
 samples/Depot                        a tiny host: /effective?as=riley&at=york
-tests/                               54 tests, including the render tests
+tests/                               60 tests, including the render tests
 ```
 
 The core has no framework dependency, so the model is usable from a worker, a console tool,
