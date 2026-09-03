@@ -140,6 +140,14 @@ modules claiming one permission are all startup failures.
 | deny always wins regardless of scope depth | 1 |
 | authorization handler registered as singleton | 2 |
 | missing cascade renders nothing instead of throwing | 1 |
+| **authorization handler always succeeds (fail-open)** | **4** |
+
+That last row was added after the fact, and it is the most useful one here. The handler — the
+code path that actually produces the 403 — originally had **no tests at all**, and replacing
+its body with an unconditional `context.Succeed()` left the whole suite green. Every other test
+covered the evaluation model or the Blazor control; nothing covered the step that turns a
+decision into an HTTP status. The UI would still have hidden the button, so the application
+would have looked correct while every guarded route stood open.
 
 The render tests are **permission-differential** — they render the same markup under two
 different permission states and assert the outputs differ. Asserting only that a permitted
